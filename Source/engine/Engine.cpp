@@ -42,7 +42,25 @@ void Looper::startOverdub()
     undoAvailable = true;
 }
 
-void Looper::command (LoopCommand c, double rateNow)
+void Looper::closeRecording (double beatSamples)
+{
+    if (beatSamples > 1.0)
+    {
+        const double beats = std::max (1.0, std::round ((double) len / beatSamples));
+        size_t newLen = (size_t) std::llround (beats * beatSamples);
+        while (newLen > maxLen && newLen > (size_t) beatSamples) newLen -= (size_t) beatSamples;   // drop whole beats to fit
+        newLen = std::min (newLen, maxLen);
+        if (newLen > len)
+        {
+            std::fill (L.begin() + (long) len, L.begin() + (long) newLen, 0.0f);
+            std::fill (R.begin() + (long) len, R.begin() + (long) newLen, 0.0f);
+        }
+        len = newLen;
+    }
+    readPos = 0;
+}
+
+void Looper::command (LoopCommand c, double rateNow, double beatSamples)
 {
     const size_t minLen = (size_t) (0.05 * fs);
     switch (c)
@@ -55,14 +73,14 @@ void Looper::command (LoopCommand c, double rateNow)
                     undoAvailable = false; st = LoopState::recording; break;
                 case LoopState::recording:
                     if (len < minLen) { reset(); break; }
-                    readPos = 0; st = LoopState::playing; break;
+                    closeRecording (beatSamples); st = LoopState::playing; break;
                 case LoopState::playing: startOverdub(); st = LoopState::overdubbing; break;
                 case LoopState::overdubbing: st = LoopState::playing; break;
                 case LoopState::stopped: readPos = reversed ? (double) len - 1 : 0; st = LoopState::playing; break;
             }
             break;
         case LoopCommand::stop:
-            if (st == LoopState::recording) { if (len < minLen) reset(); else { readPos = 0; st = LoopState::stopped; } }
+            if (st == LoopState::recording) { if (len < minLen) reset(); else { closeRecording (beatSamples); st = LoopState::stopped; } }
             else if (st == LoopState::playing || st == LoopState::overdubbing) st = LoopState::stopped;
             break;
         case LoopCommand::clear: reset(); break;
@@ -198,7 +216,11 @@ void Engine::seek (double seconds)
     atRunout = false;
 }
 
-void Engine::loopCommand (LoopCommand c) { looper.command (c, nominalSpeed()); }
+void Engine::loopCommand (LoopCommand c)
+{
+    const double beat = params.loopSync ? 60.0 / std::max (20.0, params.tempoBpm) * fs : 0.0;
+    looper.command (c, nominalSpeed(), beat);
+}
 
 double Engine::positionSeconds() const
 {

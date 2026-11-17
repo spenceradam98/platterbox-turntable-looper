@@ -72,6 +72,7 @@ AudioProcessorValueTreeState::ParameterLayout PlatterboxProcessor::createLayout(
     flt ("modDepth", "Mod Depth", 0, 1, 0.0f);
     // looper
     boolean ("loopFollow", "Loop Follows Speed", true);
+    boolean ("loopSync", "Loop Sync", false);
     flt ("loopLevel", "Loop Level", 0, 1.5f, 1.0f);
     // delay
     flt ("delayMs", "Delay Time", 10.0f, 1500.0f, 375.0f, "ms");
@@ -125,7 +126,7 @@ pb::Params PlatterboxProcessor::readParams() const
     p.cartridge = (pb::Cartridge) i ("cartridge"); p.mono = b ("mono");
     p.deckLevel = v ("deckLevel"); p.lineLevel = v ("lineLevel"); p.crossfader = v ("crossfader"); p.hamster = b ("hamster"); p.faderCurve = i ("faderCurve");
     p.filterType = (pb::FilterType) i ("filterType"); p.filter = v ("filter"); p.resonance = v ("resonance"); p.modRate = v ("modRate"); p.modDepth = v ("modDepth");
-    p.loopFollowsSpeed = b ("loopFollow"); p.loopLevel = v ("loopLevel");
+    p.loopFollowsSpeed = b ("loopFollow"); p.loopSync = b ("loopSync"); p.loopLevel = v ("loopLevel");
     p.delayMs = v ("delayMs"); p.delaySync = b ("delaySync"); p.delayDiv = i ("delayDiv"); p.feedback = v ("feedback"); p.delayLevel = v ("delayLevel");
     p.speaker = b ("speaker"); p.outputDb = v ("output");
     return p;

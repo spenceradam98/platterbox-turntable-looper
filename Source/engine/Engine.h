@@ -53,6 +53,7 @@ struct Params
     float modDepth = 0.0f;      // 0..1
     // --- looper ---
     bool loopFollowsSpeed = true;
+    bool loopSync = false;      // round the loop length to whole beats at the host tempo
     float loopLevel = 1.0f;     // 0..1.5
     // --- delay ---
     float delayMs = 375.0f;     // free time, 10..1500 ms
@@ -77,7 +78,8 @@ class Looper
 {
 public:
     void prepare (double fs, double maxSeconds);
-    void command (LoopCommand c, double rateNow);
+    // beatSamples > 0 rounds a newly closed loop to whole beats
+    void command (LoopCommand c, double rateNow, double beatSamples = 0);
     void reset();
     // in/out are one stereo frame; rateRatio = current motor speed / speed when recorded
     void process (float inL, float inR, float& outL, float& outR, double rateRatio, bool followSpeed);
@@ -90,6 +92,7 @@ public:
 
 private:
     void startOverdub();
+    void closeRecording (double beatSamples);
     std::vector<float> L, R, undoL, undoR;
     double fs = 0;
     size_t maxLen = 0, len = 0;

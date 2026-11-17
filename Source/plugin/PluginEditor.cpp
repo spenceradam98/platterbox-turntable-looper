@@ -351,6 +351,7 @@ PlatterboxEditor::PlatterboxEditor (PlatterboxProcessor& p)
     for (auto* b : { &loopMain, &loopStop, &loopClear, &loopUndo, &loopHalf, &loopDouble, &loopRev }) addAndMakeVisible (*b);
     knob ("loopLevel", "LOOP LVL");
     toggle ("loopFollow", "FOLLOW PITCH");
+    toggle ("loopSync", "BEAT SYNC");
 
     // filter
     combo ("filterType");
@@ -581,7 +582,8 @@ void PlatterboxEditor::resized()
         int bx = lx + 96;
         for (auto* b : { &loopStop, &loopClear, &loopUndo, &loopHalf, &loopDouble, &loopRev }) { b->setBounds (bx, ly + 8, 44, 40); bx += 48; }
         placeKnob (*knobById["loopLevel"], { rLoop.getRight() - 170, ly - 6, 64, 80 });
-        byId["loopFollow"]->setBounds (rLoop.getRight() - 104, ly + 18, 100, 22);
+        byId["loopFollow"]->setBounds (rLoop.getRight() - 104, ly + 8, 100, 22);
+        byId["loopSync"]->setBounds (rLoop.getRight() - 104, ly + 32, 100, 22);
     }
 
     // filter

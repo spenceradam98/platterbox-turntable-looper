@@ -142,6 +142,15 @@ int main()
         CHECK (e.getLooper().state() == LoopState::empty, "cleared");
     }
 
+    { // beat sync: a 1.1 s take at 120 bpm closes as a 1.0 s (2-beat) loop
+        Engine e; auto p = quiet(); p.motorOn = false; p.crossfader = 1.0f; p.loopSync = true; p.tempoBpm = 120.0; e.setParams (p); e.prepare (fs, 512);
+        std::vector<float> in (480, 0.2f), oL (480), oR (480);
+        e.loopCommand (LoopCommand::recPlayDub);
+        for (int b = 0; b < 110; ++b) e.process (in.data(), in.data(), oL.data(), oR.data(), 480);
+        e.loopCommand (LoopCommand::recPlayDub);
+        CHECK (std::abs (e.getLooper().lengthSeconds() - 1.0) < 1e-3, "synced length %.4f", e.getLooper().lengthSeconds());
+    }
+
     { // DJ filter: centre is transparent
         Engine e; auto p = quiet(); p.motorOn = false; p.crossfader = 1.0f; p.filter = 0.0f; e.setParams (p); e.prepare (fs, 512);
         std::vector<float> in (480), oL (480), oR (480);

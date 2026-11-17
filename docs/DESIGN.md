@@ -37,7 +37,7 @@ or scratch the deck over the loop (as on the hardware).
 | Pitch | Fader + range | ±8 %, ±16 % or ±50 %. Double-click resets. |
 | Vinyl & motor | Crackle, Hiss, Rumble, Wow, Wear, Tube | Surface noise moves with the record (it slows and stops when the platter does). Wow includes a once-per-revolution eccentricity. Wear dulls the top end and adds grit. Tube is an asymmetric preamp stage. |
 | | Cartridge | Ceramic (thin, mid-forward, rolled off, like a stock portable), Magnetic (full range), Clean (bypassed). Mono switch. |
-| Looper | REC / PLAY / DUB | Rec, then press to close the loop and play, press again to overdub. Stop, Clear, Undo (last overdub), 1/2, x2, Rev. Up to 60 s. Follow Pitch makes the loop follow the speed and pitch controls. |
+| Looper | REC / PLAY / DUB | Rec, then press to close the loop and play, press again to overdub. Stop, Clear, Undo (last overdub), 1/2, x2, Rev. Up to 60 s. Follow Pitch makes the loop follow the speed and pitch controls. Beat Sync (off by default) rounds a newly closed loop to whole beats at the host tempo, so a slightly late press still gives a clean bar. |
 | Filter | Type DJ | One knob: left is low-pass, right is high-pass, centre is off. Res sets resonance. |
 | | Type EQ | Low isolator: left kills the bass (−30 dB), right boosts it (+10 dB). Res/High becomes a high-band cut/boost. |
 | | Type Wah | Peaking band-pass wah, knob sets the centre (320 Hz–3.2 kHz), Mod Rate/Depth add an LFO sweep. |
@@ -62,18 +62,19 @@ Seafoam, Cherry (saved with the session).
   double/clear, filter transparency at centre, the run-out groove, and that nothing goes NaN or runs
   away with everything turned up.
 
-## Choices I made that you may want to change
+## Decisions taken
 
 - Name "Platterbox" (no trademark found in a quick check, but not cleared).
-- Effect plugin with a stereo input used as the "Line In" side of the crossfader. Alternative: an
-  instrument with no input.
-- Looper max 60 s, records the post-crossfader mix, loop audio is not saved with the session.
+- Effect plugin: its stereo input is the "Line In" side of the crossfader (kept over an input-less
+  instrument, so a mic, synth or another track can be scratched against).
+- Looper: free length by default, with an optional Beat Sync that rounds to whole beats at host tempo.
+  Max 60 s, records the post-crossfader mix, loop audio is not saved with the session.
 - 78 rpm added (the hardware has 33/45 only).
 
 ## Not yet done
 
 - No anti-aliasing when the record is sped up a lot (fine at normal speeds; can add oversampled
   resampling).
-- Looper is free-length; tempo-quantised loop lengths and host-sync would be the next step.
+- Loop playback is not phase-locked to the host transport (Beat Sync only fixes the length).
 - MIDI control mapping (e.g. for a DJ controller) and keyboard shortcuts.
 - Installers and a GitHub repo (on request).
